@@ -8,10 +8,10 @@ in this project i have read many times of this to understand idea and math to ma
 opencv have a small code to do it [opencv-doc](https://opencv-python-tutroals.readthedocs.io/en/latest/py_tutorials/py_calib3d/py_calibration/py_calibration.html) 
 the result of `
 ret, mtx, dist, rvecs, tvecs = cv2.calibrateCamera(objpoints, imgpoints, gray.shape[::-1],None,None)`
-mtx is that one we need it look like $ \left ( \begin{array}{ccc}
+mtx is that one we need it look like $$$ \left( \begin{array}{ccc}
 f_{x} & 0 & s_{1} \\
 0 & f_{y} & s_{2} \\
 0 & 0 & 1 \\
-\end{array} \right ) $
+\end{array} \right) $$$
 
 next i use OBR of opencv to get feature detect 
