@@ -10,7 +10,6 @@ import pickle
 import cv2
 
 import camera
-import homography
 
 
 width, height = 1280, 720
