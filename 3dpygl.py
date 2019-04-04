@@ -58,7 +58,7 @@ def set_modelview_from_camera(Rt):
         M[:3, 3] = t
 
         m = M.T.flatten()
-        # print (type(m))
+        # print (type(m))a
     except TypeError as e:
         pass
     glLoadMatrixf(m)
@@ -80,8 +80,8 @@ def draw_3D():
     glEnable(GL_DEPTH_TEST)
     glClear(GL_DEPTH_BUFFER_BIT)
     glClear(GL_COLOR_BUFFER_BIT)
-    glMaterialfv(GL_FRONT, GL_AMBIENT, [0, 0, 0, 0])
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, [0.5, 0, 0, 0])
+    glMaterialfv(GL_FRONT, GL_AMBIENT, [0, 0, 0.1, 0])
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, [1, 0, 0, 0])
     glMaterialfv(GL_FRONT, GL_SHININESS, 0.25 * 128)
 
     glutSolidTeapot(0.1)
