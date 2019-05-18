@@ -15,12 +15,14 @@ import camera
 width, height = 1280, 720
 sift = cv2.ORB_create()
 model = cv2.imread('model.jpg', 0)
-model = cv2.resize(model, (int(width/1), int(height/1)))
+model = cv2.resize(model, (int(width/1.2), int(height/1.2)))
 kp1, des1 = sift.detectAndCompute(model, None)
 bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
 
 # K = np.array([[640, 0, 320], [0, 480, 240], [0, 0, 1]])
-K = np.array([[1186, 0, 656], [0, 1168, 380], [0, 0, 1]])
+K = np.array([[1186, 0,    656], 
+              [0,    1168, 380], 
+              [0,    0,    1]])
 
 
 def set_projection_from_camera(K):
@@ -81,7 +83,7 @@ def draw_3D():
     glClear(GL_DEPTH_BUFFER_BIT)
     glClear(GL_COLOR_BUFFER_BIT)
     glMaterialfv(GL_FRONT, GL_AMBIENT, [0, 0, 0.1, 0])
-    glMaterialfv(GL_FRONT, GL_DIFFUSE, [1, 0, 0, 0])
+    glMaterialfv(GL_FRONT, GL_DIFFUSE, [0.5, 0, 0, 0])
     glMaterialfv(GL_FRONT, GL_SHININESS, 0.25 * 128)
 
     glutSolidTeapot(0.1)
@@ -114,6 +116,9 @@ def getRt(image):
             np.hstack((K, np.dot(K, np.array([[0], [0], [-1]])))))
 
         cam2 = camera.Camera(np.dot(H, cam1.P))
+        A = np.dot(np.linalg.inv(K),cam2.P[:,:3])
+        A = np.array([A[:,0],A[:,1],np.cross(A[:,0],A[:,1])]).T 
+        cam2.P[:,:3] = np.dot(K,A)
 
         return np.dot(np.linalg.inv(K), cam2.P)
 
@@ -121,17 +126,16 @@ def getRt(image):
 if __name__ == "__main__":
 
     setup()
-    video = cv2.VideoCapture('/home/trungbanh/tam/video.mp4')
+    video = cv2.VideoCapture('/home/dr-trange/tam/baidemo2.mp4')
     ketqua = np.zeros((width, height, 4))
 
     # out = cv2.VideoWriter('outpy.mp4', cv2.VideoWriter_fourcc(
-    # 'M', 'J', 'P', 'G'), 30, (width, height))
+    #     *'XVID'), 20, (width, height))
 
     while video.isOpened():
         pygame.display.iconify()
 
         _, img = video.read()
-        img = cv2.cvtColor(img, cv2.cv2.COLOR_RGB2RGBA)
         img = cv2.resize(img, (width, height))
 
         Rt = getRt(img)
@@ -143,12 +147,12 @@ if __name__ == "__main__":
 
         # trich anh tu GL
         image_buffer = glReadPixels(
-            0, 0, width, height, OpenGL.GL.GL_RGBA, OpenGL.GL.GL_UNSIGNED_BYTE)
+            0, 0, width, height, OpenGL.GL.GL_RGB, OpenGL.GL.GL_UNSIGNED_BYTE)
         image = np.frombuffer(
-            image_buffer, dtype=np.uint8).reshape(height, width, 4)
+            image_buffer, dtype=np.uint8).reshape(height, width, 3)
 
         # chuyen anh ve numpy array de tinh toan nhanh hon
-        image = cv2.cvtColor(image, cv2.cv2.COLOR_BGRA2RGBA)
+        image = cv2.cvtColor(image, cv2.cv2.COLOR_BGR2RGB)
         image = np.array(image)
         image = np.flip(image, 0)
 
@@ -170,4 +174,5 @@ if __name__ == "__main__":
             break
 
     video.release()
+    # out.release()
     cv2.cv2.destroyAllWindows()

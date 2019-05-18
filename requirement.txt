@@ -1,0 +1,7 @@
+PyOpenGL
+opencv-python
+opencv-contrib-python
+numpy
+pickle
+pygame
+scipy
